@@ -4,7 +4,7 @@ import dotenv from "dotenv"
 dotenv.config()
 import cors from "cors"
 import connectDB from "./db/connectDB.js"
-
+import userRoutes from "./routes/user.route.js"
 
 const app = express()
 
@@ -38,7 +38,7 @@ app.get("/" , (_ , res)=>{
 
 
 // created apis
-
+app.use("/api/users" , userRoutes)
 
 
 

@@ -101,3 +101,19 @@ export const login = async (req , res)=>{
         })
     }
 }
+
+
+export const logout = async (req , res)=>{
+    try {
+        return res.status(200).clearCookie("token" , "" , {
+            maxAge: 3*24*60*60*1000,
+            httpOnly: true ,
+            sameSite : "strict" ,
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            meesage : "Internal server error"
+        })
+    }
+}

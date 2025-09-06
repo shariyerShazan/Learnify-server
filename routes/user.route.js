@@ -5,6 +5,7 @@ const route = express.Router()
 
 route.post("/register" , register)
 route.post("/login" , login)
+route.post("/logout" ,  , login)
 
 
 export default route

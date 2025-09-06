@@ -155,10 +155,11 @@ export const getUser = async (req, res)=>{
 
 
 
+
 export const updateProfile = async (req, res) => {
   try {
     const { fullName } = req.body;
-    const file = req.file; 
+    const file = req.file;
     const user = await User.findById(req.userId);
 
     if (!user) return res.status(404).json({ message: "User not found", success: false });
@@ -168,9 +169,20 @@ export const updateProfile = async (req, res) => {
     if (file) {
       if (user.profilePicture) {
         const publicId = user.profilePicture.split("/").pop().split(".")[0];
-        deletePhoto(publicId)
+        await deletePhoto(publicId);
       }
-      const uploaded = await uploadMedia(file.buffer); 
+
+      const uploaded = await new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { resource_type: "auto" },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        );
+        streamifier.createReadStream(file.buffer).pipe(stream);
+      });
+
       user.profilePicture = uploaded.secure_url;
     }
 

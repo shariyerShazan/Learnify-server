@@ -18,7 +18,7 @@ export const register = async (req , res)=>{
             success: false
           })
        }
-       if(password.length >= 6){
+       if(password.length <= 6){
         return res.status(404).json({
          message : "Password can't be less then 6 cherecter" ,
          success: false
@@ -30,7 +30,7 @@ export const register = async (req , res)=>{
             success: false
           })
        }
-       if(!/[d]/.test(password)){
+       if(!/[0-9]/.test(password)){
         return res.status(404).json({
          message : "Password must have one number" ,
          success: false
@@ -81,6 +81,9 @@ export const login = async (req , res)=>{
                 success: false
               })
         }
+        const safeUser = user.toObject()
+        delete safeUser.password
+
         const token = await jwt.sign({userId: user._id} , process.env.JWT_SECRET_KEY , {expiresIn: "3d"})
         return res.status(200).cookie("token" , token , {
             maxAge: 3*24*60*60*1000,
@@ -88,7 +91,8 @@ export const login = async (req , res)=>{
             sameSite : "strict" ,
         }).json({
             message : `Welcome back ${user.fullName}`,
-            success: true
+            success: true ,
+            user :safeUser
         })
     } catch (error) {
         console.log(error)

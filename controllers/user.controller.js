@@ -1,6 +1,7 @@
 import { User } from "../models/user.model.js"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
+import { deletePhoto, uploadMedia } from "../utils/cloudinary.js"
 
 export const register = async (req , res)=>{
     try {
@@ -154,22 +155,29 @@ export const getUser = async (req, res)=>{
 
 
 
-export const updateProfile =  async (req, res)=>{
+export const updateProfile = async (req, res) => {
   try {
-    const {fullName} = req.body
-    const profilePicture = req.file
-    const user = await User.findById(req.userId)
-    if(!user){
-      return res.status(404).json({
-        message : "User not found" ,
-        success: false
-      })
+    const { fullName } = req.body;
+    const file = req.file; 
+    const user = await User.findById(req.userId);
+
+    if (!user) return res.status(404).json({ message: "User not found", success: false });
+
+    if (fullName) user.fullName = fullName;
+
+    if (file) {
+      if (user.profilePicture) {
+        const publicId = user.profilePicture.split("/").pop().split(".")[0];
+        deletePhoto(publicId)
+      }
+      const uploaded = await uploadMedia(file.buffer); 
+      user.profilePicture = uploaded.secure_url;
     }
+
+    await user.save();
+    res.status(200).json({ message: "Profile Updated", success: true });
   } catch (error) {
-    console.log(error) 
-    return res.status(500).json({
-        message : "Internal server error" ,
-        success: false
-    })
+    console.error(error);
+    res.status(500).json({ message: "Internal server error", success: false });
   }
-}
+};

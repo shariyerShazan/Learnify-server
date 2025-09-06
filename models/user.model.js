@@ -32,8 +32,9 @@ const userSchema = new mongoose.Schema({
     } ,
     profilePicture : {
         type: String ,
-       default : "https://img.freepik.com/premium-vector/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-vector-illustration_561158-3383.jpg?semt=ais_hybrid&w=740&q=80"
-    }
+      default : "https://img.freepik.com/premium-vector/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-vector-illustration_561158-3383.jpg?semt=ais_hybrid&w=740&q=80"
+    },
+    profilePictureId: { type: String }
 
 } , {timestamps: true})
 

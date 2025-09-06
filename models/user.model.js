@@ -28,7 +28,11 @@ const userSchema = new mongoose.Schema({
     ],
     password: {
         type : String ,
-        default : "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small_2x/default-avatar-icon-of-social-media-user-vector.jpg"
+        required : true
+    } ,
+    profilePicture : {
+        type: String ,
+       default : "https://img.freepik.com/premium-vector/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-vector-illustration_561158-3383.jpg?semt=ais_hybrid&w=740&q=80"
     }
 
 } , {timestamps: true})

@@ -18,6 +18,24 @@ export const register = async (req , res)=>{
             success: false
           })
        }
+       if(password.length >= 6){
+        return res.status(404).json({
+         message : "Password can't be less then 6 cherecter" ,
+         success: false
+       })
+    }
+       if(!/[a-zA-z]/.test(password)){
+           return res.status(404).json({
+            message : "Password must have one letter" ,
+            success: false
+          })
+       }
+       if(!/[d]/.test(password)){
+        return res.status(404).json({
+         message : "Password must have one number" ,
+         success: false
+       })
+    }
        const hashPassword = await bcrypt.hash(password , 10)
          await User.create({
             fullName ,

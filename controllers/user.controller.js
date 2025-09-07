@@ -162,7 +162,12 @@ export const updateProfile = async (req, res) => {
     const file = req.file;
     const user = await User.findById(req.userId);
 
-    if (!user) return res.status(404).json({ message: "User not found", success: false });
+    if (!user){
+       return res.status(404).json({
+         message: "User not found",
+          success: false
+         })
+      };
 
     if (fullName) user.fullName = fullName;
 
@@ -187,7 +192,7 @@ export const updateProfile = async (req, res) => {
     }
 
     await user.save();
-    res.status(200).json({ message: "Profile Updated", success: true });
+    return res.status(200).json({ message: "Profile Updated", success: true });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error", success: false });

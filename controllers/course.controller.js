@@ -150,3 +150,34 @@ export const editCourse = async (req , res)=>{
     }
 }
 
+export const publishCourse = async (req, res) => {
+    try {
+      const { courseId } = req.params;
+  
+      const course = await Course.findOne({ _id: courseId, instructor: req.userId });
+      if (!course) {
+        return res.status(400).json({
+          message: "You can't edit this course",
+          success: false,
+        });
+      }
+  
+      course.isPublished = !course.isPublished;
+      const published = course.isPublished;
+  
+      await course.save();
+  
+      return res.status(200).json({
+        message: `${published ? "Course Published Successfully" : "Course Unpublished Successfully"}`,
+        success: true,
+        isPublished: published,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        message: "Internal server error",
+        success: false,
+      });
+    }
+  };
+  

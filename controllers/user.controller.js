@@ -1,7 +1,10 @@
 import { User } from "../models/user.model.js"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
-import { deletePhoto, uploadMedia } from "../utils/cloudinary.js"
+import { deletePhoto} from "../utils/cloudinary.js"
+import { v2 as cloudinary } from "cloudinary";
+import streamifier from 'streamifier';
+
 
 export const register = async (req , res)=>{
     try {
@@ -85,7 +88,11 @@ export const login = async (req , res)=>{
         const safeUser = user.toObject()
         delete safeUser.password
 
-        const token = await jwt.sign({userId: user._id} , process.env.JWT_SECRET_KEY , {expiresIn: "3d"})
+        const token = await jwt.sign({
+          userId: user._id} ,
+           process.env.JWT_SECRET_KEY ,
+            {expiresIn: "3d"}
+          )
         return res.status(200).cookie("token" , token , {
             maxAge: 3*24*60*60*1000,
             httpOnly: true ,
@@ -192,9 +199,15 @@ export const updateProfile = async (req, res) => {
     }
 
     await user.save();
-    return res.status(200).json({ message: "Profile Updated", success: true });
+    return res.status(200).json({
+       message: "Profile Updated",
+        success: true 
+      });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error", success: false });
+    res.status(500).json({
+       message: "Internal server error",
+        success: false 
+      });
   }
 };

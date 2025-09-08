@@ -1,4 +1,4 @@
-import {v2 as cloudinary}  from "cloudinary"
+import { v2 as cloudinary } from "cloudinary";
 import dotenv from "dotenv"
 dotenv.config()
 
@@ -17,6 +17,8 @@ export const uploadMedia = async (file)=>{
         console.log(error)
     }
 }
+
+
 
 
 export const deletePhoto = async (publicId)=>{

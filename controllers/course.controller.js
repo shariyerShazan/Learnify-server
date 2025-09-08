@@ -181,3 +181,28 @@ export const publishCourse = async (req, res) => {
     }
   };
   
+
+
+export const deleteCourse = async (req , res)=>{
+    try {
+        const { courseId } = req.params;
+  
+        const course = await Course.findOneAndDelete({ _id: courseId, instructor: req.userId });
+        if (!course) {
+          return res.status(400).json({
+            message: "You can't edit this course",
+            success: false,
+          });
+        }
+        return res.status(200).json({
+            message : "Course deleted succesfully" ,
+            success: true
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+          message: "Internal server error",
+          success: false,
+        });
+    }
+}

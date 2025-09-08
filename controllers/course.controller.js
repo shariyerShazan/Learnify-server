@@ -37,7 +37,8 @@ export const getAdminCourses = async (req , res)=>{
         if(courses.length === 0){
             return res.status(400).json({
                 message : "No course available." ,
-                success : false
+                success : false ,
+                courses : []
             })
         }
         return res.status(200).json({
@@ -56,7 +57,7 @@ export const getAdminCourses = async (req , res)=>{
 
 
 
-export const getCouseById = async (req , res)=>{
+export const getCourseById = async (req , res)=>{
     try {
         const {courseId} = req.params
         const course = await Course.findById(courseId)
@@ -68,6 +69,7 @@ export const getCouseById = async (req , res)=>{
         }
         return res.status(200).json({
             message : "Course here" ,
+            success: true,
             course
         })
     } catch (error) {
@@ -116,22 +118,22 @@ export const editCourse = async (req , res)=>{
           }
       
 
-      if(courseTitle !== undefined){
+      if(courseTitle !== undefined && courseTitle !== ""){
         course.courseTitle = courseTitle 
       }
-      if(subtitle !== undefined){
+      if(subtitle !== undefined && subtitle !== ""){
         course.subtitle = subtitle
       }
-      if(coursePrice !== undefined){
-        course.coursePrice = coursePrice
+      if(coursePrice !== undefined && coursePrice !== ""){
+        course.coursePrice = Number(coursePrice)
       }
-      if(description !== undefined){
+      if(description !== undefined && description !== ""){
         course.description = description
       }
-      if(category !== undefined){
+      if(category !== undefined && category !== ""){
         course.category = category
       }
-      if(courseLevel !== undefined){
+      if(courseLevel !== undefined && courseLevel !== "" ){
         course.courseLevel = courseLevel
       }
       await course.save()

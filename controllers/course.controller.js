@@ -85,8 +85,29 @@ export const editCourse = async (req , res)=>{
       
             course.courseThumbnail = uploaded.secure_url;
           }
-      
-
+      if(courseTitle){
+        course.courseTitle = courseTitle 
+      }
+      if(subtitle){
+        course.subtitle = subtitle
+      }
+      if(coursePrice){
+        course.coursePrice = coursePrice
+      }
+      if(description){
+        course.description = description
+      }
+      if(category){
+        course.category = category
+      }
+      if(courseLevel){
+        course.courseLevel = courseLevel
+      }
+      await course.save()
+      return res.status(200).json({
+        message : "Course Updated Successfully" ,
+        success: true
+      })
     } catch (error) {
         console.log(error)
         return res.status(500).json({

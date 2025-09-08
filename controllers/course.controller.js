@@ -50,3 +50,49 @@ export const getAdminCourses = async (req , res)=>{
         })
     }
 }
+
+
+
+
+export const editCourse = async (req , res)=>{
+    try {
+        const {courseId }= req.params
+        const {courseTitle , subtitle , coursePrice , description , category , courseLevel } = req.body 
+        const file = req.file
+        let course = await Course.findOne({_id: courseId , instructor : req.userId})
+        if(!course){
+            return res.status(400).json({
+                message : "You can't edit this course" ,
+                success: false
+            })
+        }
+        if (file) {
+            if (course.courseThumbnail) {
+              const publicId = course.courseThumbnail.split("/").pop().split(".")[0];
+              await deletePhoto(publicId);
+            }
+      
+            const uploaded = await new Promise((resolve, reject) => {
+              const stream = cloudinary.uploader.upload_stream(
+                { resource_type: "auto" },
+                (error, result) => {
+                  if (error) reject(error);
+                  else resolve(result);
+                }
+              );
+              streamifier.createReadStream(file.buffer).pipe(stream);
+            });
+      
+            course.courseThumbnail = uploaded.secure_url;
+          }
+      
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message : "Internal server error" ,
+            success: false
+        })
+    }
+}
+

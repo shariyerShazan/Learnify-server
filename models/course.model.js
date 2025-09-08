@@ -5,7 +5,7 @@ const courseSchema = new mongoose.Schema({
         type: String ,
         required : true
     } ,
-    subTitle: {
+    subtitle: {
         type: String ,
     },
     description: {

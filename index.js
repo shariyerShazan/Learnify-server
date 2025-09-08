@@ -40,7 +40,7 @@ app.get("/" , (_ , res)=>{
 
 // created apis
 app.use("/api/users" , userRoutes)
-app.use("api/courses" , courseRoutes)
+app.use("/api/courses" , courseRoutes)
 
 
 

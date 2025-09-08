@@ -176,7 +176,7 @@ export const updateProfile = async (req, res) => {
          })
       };
 
-    if (fullName) user.fullName = fullName;
+    if (fullName !== undefined) user.fullName = fullName;
 
     if (file) {
       if (user.profilePicture) {

@@ -1,4 +1,7 @@
 import { Course } from "../models/course.model.js"
+import { deletePhoto } from "../utils/cloudinary.js"
+import { v2 as cloudinary } from "cloudinary";
+import streamifier from 'streamifier';
 
 export const createCourse = async (req , res)=>{
     try {
@@ -66,41 +69,46 @@ export const editCourse = async (req , res)=>{
                 success: false
             })
         }
+
+        // upload thumbnail
         if (file) {
-            if (course.courseThumbnail) {
-              const publicId = course.courseThumbnail.split("/").pop().split(".")[0];
-              await deletePhoto(publicId);
+            try {
+              if (course.courseThumbnail) {
+                const publicId = course.courseThumbnail.split("/").pop().split(".")[0];
+                await deletePhoto(publicId);
+              }
+              const uploaded = await new Promise((resolve, reject) => {
+                const stream = cloudinary.uploader.upload_stream(
+                  { resource_type: "auto" },
+                  (error, result) => (error ? reject(error) : resolve(result))
+                );
+                streamifier.createReadStream(file.buffer).pipe(stream);
+              });
+      
+              course.courseThumbnail = uploaded.secure_url;
+            } catch (err) {
+              console.log("Thumbnail upload error:", err);
+              return res.status(500).json({ message: "Thumbnail upload failed", success: false });
             }
-      
-            const uploaded = await new Promise((resolve, reject) => {
-              const stream = cloudinary.uploader.upload_stream(
-                { resource_type: "auto" },
-                (error, result) => {
-                  if (error) reject(error);
-                  else resolve(result);
-                }
-              );
-              streamifier.createReadStream(file.buffer).pipe(stream);
-            });
-      
-            course.courseThumbnail = uploaded.secure_url;
           }
-      if(courseTitle){
+      
+
+      if(courseTitle !== undefined){
         course.courseTitle = courseTitle 
       }
-      if(subtitle){
+      if(subtitle !== undefined){
         course.subtitle = subtitle
       }
-      if(coursePrice){
+      if(coursePrice !== undefined){
         course.coursePrice = coursePrice
       }
-      if(description){
+      if(description !== undefined){
         course.description = description
       }
-      if(category){
+      if(category !== undefined){
         course.category = category
       }
-      if(courseLevel){
+      if(courseLevel !== undefined){
         course.courseLevel = courseLevel
       }
       await course.save()

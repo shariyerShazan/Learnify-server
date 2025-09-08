@@ -7,7 +7,6 @@ const courseSchema = new mongoose.Schema({
     } ,
     subTitle: {
         type: String ,
-        // required : true
     },
     description: {
         type: String 
@@ -22,11 +21,9 @@ const courseSchema = new mongoose.Schema({
     } ,
     coursePrice: {
         type: Number ,
-        // required : true
     } ,
     courseThumbnail: {
         type: String ,
-        // required : true
     } ,
     enrolledStudents: [
         {

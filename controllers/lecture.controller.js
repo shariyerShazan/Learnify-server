@@ -88,7 +88,8 @@ export const editLecture = async (req, res) => {
   export const getSingleLecture = async (req, res) => {
     try {
       const { lectureId } = req.params;
-      
+
+      // what is lean?
       const lecture = await Lecture.findById(lectureId).lean(); 
       
       if (!lecture) {
@@ -112,3 +113,27 @@ export const editLecture = async (req, res) => {
     }
   };
   
+
+
+  export const deleteLecture = async (req, res)=>{
+    try {
+         const {lectureId} = req.params
+         const lecture = await Lecture.findOneAndDelete({_id: lectureId , creator : req.userId})
+         if(lecture){
+          return res.status(400).json({
+            message : "You can't delete this lecture" ,
+            success: false
+          })
+         }
+         return res.status(200).json({
+          message : "Leacture deleted" ,
+          success: true
+         })
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        message: "Internal server error",
+        success: false,
+      });
+    }
+  }

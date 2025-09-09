@@ -21,7 +21,8 @@ export const createLecture  = async (req , res)=>{
          }
          const lecture = await Lecture.create({
                lectureTitle ,
-               creator: req.userId
+               creator: req.userId ,
+               course: courseId
             })
         course.lectures.push(lecture._id)
         await  course.save()
@@ -66,7 +67,7 @@ export const editLecture = async (req, res) => {
       }
   
       if (lectureTitle !== "") lecture.lectureTitle = lectureTitle;
-      if (freeVideo) lecture.freeVideo = true;
+      if (freeVideo !== undefined) lecture.freeVideo = freeVideo;
   
       await lecture.save();
   
@@ -127,8 +128,19 @@ export const editLecture = async (req, res) => {
           success: false,
         });
       }
-      await Lecture.findByIdAndDelete(lectureId);
-  
+      
+
+      const course = await Course.findById(lecture.course)
+     
+      if(!course){
+        return res.status(400).json({
+          message: "Course not found",
+          success: false,
+        });
+      }
+       course.lectures.pull(lectureId)
+        await Lecture.findByIdAndDelete(lectureId);
+        await course.save()
       return res.status(200).json({
         message: "Lecture deleted",
         success: true,

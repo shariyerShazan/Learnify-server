@@ -1,4 +1,5 @@
 import { Course } from "../models/course.model.js"
+import { Lecture } from "../models/lecture.model.js";
 import { deletePhoto } from "../utils/cloudinary.js"
 import { v2 as cloudinary } from "cloudinary";
 import streamifier from 'streamifier';
@@ -198,8 +199,10 @@ export const publishCourse = async (req, res) => {
           success: false,
         });
       }
+
+     await Lecture.deleteMany({course:courseId})
       await Course.findByIdAndDelete(courseId);
-  
+      
       return res.status(200).json({
         message: "Course deleted successfully",
         success: true,

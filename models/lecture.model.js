@@ -17,6 +17,10 @@ const lectureSchema = new mongoose.Schema({
         creator: {
             type: mongoose.Schema.Types.ObjectId ,
             ref: "User"
+        } ,
+        course: {
+            type: mongoose.Schema.Types.ObjectId ,
+            ref: "Course"
         }
 }, {timestamps : true})
 

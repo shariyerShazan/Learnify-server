@@ -61,7 +61,7 @@ export const getAdminCourses = async (req , res)=>{
 export const getCourseById = async (req , res)=>{
     try {
         const {courseId} = req.params
-        const course = await Course.findById(courseId).populate("lectures")
+        const course = await Course.findById(courseId).populate("lectures").populate("instructor")
         if(!course){
             return res.status(200).json({
                 message : "Course not found" ,
@@ -206,6 +206,34 @@ export const publishCourse = async (req, res) => {
       return res.status(200).json({
         message: "Course deleted successfully",
         success: true,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        message: "Internal server error",
+        success: false,
+      });
+    }
+  };
+  
+
+
+
+
+  export const getPublishedCourse = async (req, res) => {
+    try {
+      const courses = await Course.find({ isPublished: true })
+        .populate("instructor")
+      if(!courses){
+        return res.status(400).json({
+          message : "No course available" ,
+          success : false
+        })
+      }
+      return res.status(200).json({
+        message: "Published courses fetched successfully",
+        success: true,
+        courses,
       });
     } catch (error) {
       console.log(error);

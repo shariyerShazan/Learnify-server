@@ -1,5 +1,6 @@
 import { Course } from "../models/course.model.js"
 import { Lecture } from "../models/lecture.model.js"
+import { uploadMedia } from "../utils/cloudinary.js"
 
 export const createLecture  = async (req , res)=>{
     try {
@@ -83,3 +84,26 @@ export const editLecture = async (req, res) => {
     }
   };
   
+
+export const getSingleLecture = async (req , res)=>{
+  try {
+      const {lectureId} = req.params
+      const lecture = Lecture.findById(lectureId)
+      if(!lecture){
+        return res.status(400).json({
+          message: "Lecture not found",
+          success: false,
+        });
+      }
+      return res.status(200).json({
+        message : "Lecture here" ,
+        success: true
+      })
+  } catch (error) {
+    console.log(error);
+      return res.status(500).json({
+        message: "Internal server error",
+        success: false,
+      });
+  }
+}

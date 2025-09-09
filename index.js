@@ -6,6 +6,7 @@ import cors from "cors"
 import connectDB from "./db/connectDB.js"
 import userRoutes from "./routes/user.route.js"
 import courseRoutes from  "./routes/course.route.js"
+import lectureRoutes from "./routes/lecture.routes.js"
 
 const app = express()
 
@@ -41,6 +42,7 @@ app.get("/" , (_ , res)=>{
 // created apis
 app.use("/api/users" , userRoutes)
 app.use("/api/courses" , courseRoutes)
+app.use("/api/lectures" , lectureRoutes)
 
 
 

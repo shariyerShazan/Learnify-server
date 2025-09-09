@@ -18,7 +18,10 @@ export const createLecture  = async (req , res)=>{
                 success: false
             })
          }
-         const lecture = await Lecture.create({lectureTitle})
+         const lecture = await Lecture.create({
+               lectureTitle ,
+               creator: req.userId
+            })
         course.lectures.push(lecture._id)
         await  course.save()
        
@@ -34,3 +37,49 @@ export const createLecture  = async (req , res)=>{
         })
     }
 }
+
+
+export const editLecture = async (req, res) => {
+    try {
+      const { lectureId } = req.params;
+      const { lectureTitle, freeVideo } = req.body;
+      const file = req.file; 
+  
+      const lecture = await Lecture.findOne({ _id: lectureId, creator: req.userId });
+      if (!lecture) {
+        return res.status(400).json({
+          message: "You can't edit this lecture",
+          success: false,
+        });
+      }
+  
+      if (file) {
+        if (lecture.publicId) {
+          await cloudinary.uploader.destroy(lecture.publicId, { resource_type: "video" });
+        }
+
+        const uploadResponse = await uploadMedia(file.buffer, "video");
+  
+        lecture.videoUrl = uploadResponse.secure_url;
+        lecture.publicId = uploadResponse.public_id;
+      }
+  
+      if (lectureTitle !== "") lecture.lectureTitle = lectureTitle;
+      if (freeVideo) lecture.freeVideo = true;
+  
+      await lecture.save();
+  
+      return res.status(200).json({
+        message: "Lecture updated successfully",
+        success: true,
+        lecture,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        message: "Internal server error",
+        success: false,
+      });
+    }
+  };
+  

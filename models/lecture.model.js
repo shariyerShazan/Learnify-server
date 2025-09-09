@@ -9,10 +9,14 @@ const lectureSchema = new mongoose.Schema({
             type: String 
         } ,
         publicId : {
-            type : string
+            type : String
         } ,
-        introVideo : {
+        freeVideo : {
             type: Boolean
+        },
+        creator: {
+            type: mongoose.Schema.Types.ObjectId ,
+            ref: "User"
         }
 }, {timestamps : true})
 

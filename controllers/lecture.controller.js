@@ -115,20 +115,24 @@ export const editLecture = async (req, res) => {
   
 
 
-  export const deleteLecture = async (req, res)=>{
+  export const deleteLecture = async (req, res) => {
     try {
-         const {lectureId} = req.params
-         const lecture = await Lecture.findOneAndDelete({_id: lectureId , creator : req.userId})
-         if(lecture){
-          return res.status(400).json({
-            message : "You can't delete this lecture" ,
-            success: false
-          })
-         }
-         return res.status(200).json({
-          message : "Leacture deleted" ,
-          success: true
-         })
+      const { lectureId } = req.params;
+  
+      const lecture = await Lecture.findOne({ _id: lectureId, creator: req.userId });
+  
+      if (!lecture) {
+        return res.status(400).json({
+          message: "You can't delete this lecture",
+          success: false,
+        });
+      }
+      await Lecture.findByIdAndDelete(lectureId);
+  
+      return res.status(200).json({
+        message: "Lecture deleted",
+        success: true,
+      });
     } catch (error) {
       console.log(error);
       return res.status(500).json({
@@ -136,4 +140,5 @@ export const editLecture = async (req, res) => {
         success: false,
       });
     }
-  }
+  };
+  

@@ -161,7 +161,11 @@ export const publishCourse = async (req, res) => {
           success: false,
         });
       }
-  
+     if(course.lectures.length <= 0){
+        return res.status(400).json({
+            message : "You have to add Lectures to publish this course"
+        })
+     }
       course.isPublished = !course.isPublished;
       const published = course.isPublished;
   
